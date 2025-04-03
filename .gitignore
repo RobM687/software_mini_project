@@ -1,0 +1,8 @@
+# Ignore directories
+data/
+results/
+venv/
+
+# Ignore file types
+*.log
+*.tmp

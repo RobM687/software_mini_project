@@ -1,0 +1,51 @@
+version 1.0
+
+task vep {
+    input {
+        File vep
+        File vcf
+        File reference_fa
+        String cache_version
+        Int fork
+    }
+
+    String outputName = sub(basename(vcf), "_sorted\\.vcf$", "")
+
+    command <<<
+        #copying and unpacking vep tar file/cache
+        cp ~{vep} .
+        tar -zxvf ~{basename(vep)}
+        
+        #running vep
+        vep \
+        --tab \
+        --no_stats \
+        -i ~{vcf} \
+        -o ~{outputName}_annotated.tsv \
+        --assembly GRCh38 \
+        --refseq \
+        --offline \
+        --cache \
+        --dir_cache . \
+        --cache_version ~{cache_version} \
+        --fork ~{fork} \
+        --fasta ~{reference_fa} \
+        --exclude_predicted \
+        --everything \
+        --hgvsg \
+        --show_ref_allele \
+        --uploaded_allele \
+        --check_existing \
+        --transcript_version
+    >>>
+
+    output {
+        File annotated_vcf = "~{outputName}_annotated.tsv"
+    }
+
+    runtime {
+        docker: "swglh/ensembl-vep:86"
+        memory: "16G"
+        cpu: 16
+    }
+}
