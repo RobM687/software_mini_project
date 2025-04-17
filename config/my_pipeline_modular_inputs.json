@@ -1,15 +1,15 @@
 {
-    "my_pipeline_modular.read2": "/largedata/share/stp/rob/intro_to_WDL/my_pipeline/input/CCa_B1519172_S1_R2_001.fastq.gz",
-    "my_pipeline_modular.read1": "/largedata/share/stp/rob/intro_to_WDL/my_pipeline/input/CCa_B1519172_S1_R1_001.fastq.gz",
-    "my_pipeline_modular.reference_fa": "/largedata/share/matt/resources/GRCh38_masked_v2_decoy_excludes_GPRIN2_DUSP22_FANCD2/GRCh38_masked_v2_decoy_excludes_GPRIN2_DUSP22_FANCD2.fa",
-    "my_pipeline_modular.reference_fabwt2bit64": "/largedata/share/matt/resources/GRCh38_masked_v2_decoy_excludes_GPRIN2_DUSP22_FANCD2/GRCh38_masked_v2_decoy_excludes_GPRIN2_DUSP22_FANCD2.fa.bwt.2bit.64",
-    "my_pipeline_modular.reference_faann": "/largedata/share/matt/resources/GRCh38_masked_v2_decoy_excludes_GPRIN2_DUSP22_FANCD2/GRCh38_masked_v2_decoy_excludes_GPRIN2_DUSP22_FANCD2.fa.ann",
-    "my_pipeline_modular.reference_faamb": "/largedata/share/matt/resources/GRCh38_masked_v2_decoy_excludes_GPRIN2_DUSP22_FANCD2/GRCh38_masked_v2_decoy_excludes_GPRIN2_DUSP22_FANCD2.fa.amb",
-    "my_pipeline_modular.reference_fapac": "/largedata/share/matt/resources/GRCh38_masked_v2_decoy_excludes_GPRIN2_DUSP22_FANCD2/GRCh38_masked_v2_decoy_excludes_GPRIN2_DUSP22_FANCD2.fa.pac",
-    "my_pipeline_modular.reference_fa0123": "/largedata/share/matt/resources/GRCh38_masked_v2_decoy_excludes_GPRIN2_DUSP22_FANCD2/GRCh38_masked_v2_decoy_excludes_GPRIN2_DUSP22_FANCD2.fa.0123",
-    "my_pipeline_modular.bed_file": "/largedata/share/stp/rob/intro_to_WDL/my_pipeline/input/v2.RD_regions_BRCA1.bed",
-    "my_pipeline_modular.reference_fafai": "/largedata/share/matt/resources/GRCh38_masked_v2_decoy_excludes_GPRIN2_DUSP22_FANCD2/GRCh38_masked_v2_decoy_excludes_GPRIN2_DUSP22_FANCD2.fa.fai",
+    "my_pipeline_modular.read2": "/pathtosample_read2_S1_R2_001.fastq.gz",
+    "my_pipeline_modular.read1": "/pathtosample_read1_S1_R1_001.fastq.gz",
+    "my_pipeline_modular.reference_fa": "/pathto_ref.fa",
+    "my_pipeline_modular.reference_fabwt2bit64": "/pathto_ref.fa.bwt.2bit.64",
+    "my_pipeline_modular.reference_faann": "/pathto_ref.fa.ann",
+    "my_pipeline_modular.reference_faamb": "/pathto_ref.fa.amb",
+    "my_pipeline_modular.reference_fapac": "/pathto_ref.fa.pac",
+    "my_pipeline_modular.reference_fa0123": "/pathto_ref.fa.0123",
+    "my_pipeline_modular.bed_file": "/pathto_bedfile.bed",
+    "my_pipeline_modular.reference_fafai": "/pathto_ref.fa.fai",
     "my_pipeline_modular.cache_version": "111",
     "my_pipeline_modular.fork": 16,
-    "my_pipeline_modular.vep": "/largedata/share/vep/homo_sapiens_refseq_vep_111_GRCh38.tar.gz"
+    "my_pipeline_modular.vep": "/pathto_vep.tar.gz"
   }
