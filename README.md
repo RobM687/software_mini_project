@@ -1,6 +1,6 @@
 # software_mini_project for software training module
 
-This is a flow diagram for the `my_pipeline_modular_wf.wdl` workflow:
+Flow diagram for the `my_pipeline_modular_wf.wdl` workflow:
 
 ```mermaid
 graph TD
