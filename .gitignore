@@ -3,10 +3,11 @@ data/
 results/
 myenv/
 inputs/
-_LAST/
 2025*/
 
 # Ignore file types
 *.log
 *.tmp
 *.log
+config/test_inputs.json
+_LAST
