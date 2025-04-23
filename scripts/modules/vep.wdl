@@ -2,7 +2,7 @@ version 1.0
 
 task vep {
     input {
-        File vep
+        File vep_tar
         File vcf
         File reference_fa
         String cache_version
@@ -13,8 +13,8 @@ task vep {
 
     command <<<
         #copying and unpacking vep tar file/cache
-        cp ~{vep} .
-        tar -zxvf ~{basename(vep)}
+        cp ~{vep_tar} .
+        tar -zxvf ~{basename(vep_tar)}
         
         #running vep
         vep \

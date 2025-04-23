@@ -1,8 +1,12 @@
 # Ignore directories
 data/
 results/
-venv/
+myenv/
+inputs/
+_LAST/
+2025*/
 
 # Ignore file types
 *.log
 *.tmp
+*.log

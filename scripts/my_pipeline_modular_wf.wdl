@@ -1,10 +1,10 @@
 version 1.0
 
-import "fastqc.wdl" as fastqc
-import "fastp.wdl" as fastp
-import "bwamem2.wdl" as bwamem2
-import "freebayes.wdl" as freebayes
-import "vep.wdl" as vep
+import "modules/fastqc.wdl" as fastqc
+import "modules/fastp.wdl" as fastp
+import "modules/bwamem2.wdl" as bwamem2
+import "modules/freebayes.wdl" as freebayes
+import "modules/vep.wdl" as vep
 
 workflow my_pipeline_modular {
     input {
@@ -18,7 +18,7 @@ workflow my_pipeline_modular {
         File reference_fa0123
         File reference_fafai
         File bed_file
-        File vep
+        File vep_tar
         String cache_version
         Int fork
         # Do i need a defined output directory OutputDir?
@@ -69,7 +69,7 @@ workflow my_pipeline_modular {
 
     call vep.vep {
         input:
-            vep = vep,
+            vep_tar = vep_tar,
             vcf = freebayes.vcf,
             reference_fa = reference_fa,
             cache_version = cache_version,
