@@ -3,6 +3,7 @@ version 1.0
 import "modules/fastqc.wdl" as fastqc
 import "modules/fastp.wdl" as fastp
 import "modules/bwamem2.wdl" as bwamem2
+import "modules/remove_dups.wdl" as remove_dups
 import "modules/freebayes.wdl" as freebayes
 import "modules/vep.wdl" as vep
 
@@ -58,6 +59,17 @@ workflow my_pipeline_modular {
             reference_fa0123 = reference_fa0123
     }
 
+    call remove_dups.RemoveDuplicates {
+        input:
+            alignedBam = bwamem2.alignedBam,
+            alignedBai = bwamem2.alignedBai
+    }
+    
+    call remove_dups.IndexDedupBam {
+        input:
+            dedup_bam = remove_dups.RemoveDuplicates.dedup_bam
+    }
+
     call freebayes.freebayes {
         input:
             alignedBam = bwamem2.alignedBam,
@@ -85,6 +97,9 @@ workflow my_pipeline_modular {
         File trimmed_read2 = fastp.trimmed_read2
         File alignedBam = bwamem2.alignedBam
         File alignedBai = bwamem2.alignedBai
+        File dedup_bam = RemoveDuplicates.dedup_bam
+        File dedup_bai = IndexDedupBam.dedup_bai
+        File dedup_metrics = RemoveDuplicates.dedup_metrics
         File vcf = freebayes.vcf
         File annotated_vcf = vep.annotated_vcf
     }
