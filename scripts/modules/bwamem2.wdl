@@ -25,7 +25,10 @@ task bwamem2 {
         touch reference_fapac &&
         touch reference_fa0123 &&
         #code to run bwa-mem2 aligner, will use index file already present in file
-        bwa-mem2 mem ~{reference_fa} ~{read1} ~{read2} > ~{outputName}.sam &&
+        bwa-mem2 mem \
+        -R $(echo "@RG\tID:~{outputName}\tSM:~{outputName}\tPL:ILLUMINA\tLB:~{outputName}") \
+        ~{reference_fa} \
+        ~{read1} ~{read2} > ~{outputName}.sam &&
 
         #convert SAM to BAM
         samtools view -Sb ~{outputName}.sam > ~{outputName}.bam &&

@@ -6,16 +6,15 @@ task RemoveDuplicates {
         File alignedBai
     }
 
-     # Derive the output name from read1 by removing the '_sorted.bam' suffix
+     # Derive the output name from alignedBam by removing the '_sorted.bam' suffix
     String outputName = sub(basename(alignedBam), "_sorted\\.bam$", "")
 
     command <<<
         java -jar /app/picard.jar \
         MarkDuplicates \
-        I=~{alignedBam}
+        I=~{alignedBam} \
         O=~{outputName}_dedup.bam \
-        M=dedup_metrics.txt \
-        INDEX=~{alignedBai}
+        M=dedup_metrics.txt
     >>>
 
     output {
@@ -24,7 +23,7 @@ task RemoveDuplicates {
     }
 
     runtime {
-        docker: "swglh/picard:1.0" # Docker image i've created, will it work, who knows???
+        docker: "swglh/picard:1.1" # Docker image i've created, will it work, who knows???
         memory: "4 GB" # Check if this is appropriate
         cpu: 2 # Check if this is appropriate
 
@@ -42,16 +41,16 @@ task IndexDedupBam {
     command <<<
         java -jar /app/picard.jar \
         BuildBamIndex \
-        I=~{dedup_bam}
-        O=~{outputName}_dedup.bai
+        I=~{dedup_bam} \
+        O=~{dedup_bam}.bai
     >>>
 
     output {
-        File dedup_bai = "~{outputName}_dedup.bai"
+        File dedup_bai = "~{dedup_bam}.bai"
     }
 
     runtime {
-        docker: "swglh/picard:1.0" # Docker image i've created, will it work, who knows???
+        docker: "swglh/picard:1.1" # Docker image i've created, will it work, who knows???
         memory: "2 GB" # Check if this is appropriate
         cpu: 1 # Check if this is appropriate
     }

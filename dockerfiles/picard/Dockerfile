@@ -1,11 +1,13 @@
 FROM ubuntu:20.04
-
+# swglh/picard:1.1
+# This is a base image for the Picard tools.
 # Setting the working directory in the container to /app
 WORKDIR /app
 
 # Install the required dependencies
 RUN apt-get update && apt-get install -y \
-    openjdk-11-jre \
+    # Updated from openjdk-11-jre to openjdk-17-jre, as picard 3.4.0 requires Java 17 or higher.
+    openjdk-17-jre \
     wget \
     # Steps to clean up the docker image, removing unnecessary packages and config files.
     && apt-get clean \

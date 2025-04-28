@@ -67,13 +67,13 @@ workflow my_pipeline_modular {
     
     call remove_dups.IndexDedupBam {
         input:
-            dedup_bam = remove_dups.RemoveDuplicates.dedup_bam
+            dedup_bam = RemoveDuplicates.dedup_bam
     }
 
     call freebayes.freebayes {
         input:
-            alignedBam = bwamem2.alignedBam,
-            alignedBai = bwamem2.alignedBai,
+            alignedBam = RemoveDuplicates.dedup_bam,
+            alignedBai = IndexDedupBam.dedup_bai,
             reference_fa = reference_fa,
             reference_fafai = reference_fafai,
             bed_file = bed_file
