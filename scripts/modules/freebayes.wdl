@@ -10,7 +10,7 @@ task freebayes {
     }
 
     # Derive the output name from read1 by removing the '_R1.fastq.gz' suffix
-    String outputName = sub(basename(alignedBam), "_sorted\\.bam$", "")
+    String outputName = sub(basename(alignedBam), "_dedup\\.bam$", "")
 
     command <<<
         #running Freebayes in standard configuration

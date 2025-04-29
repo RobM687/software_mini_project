@@ -1,18 +1,30 @@
 import vcf
 
 def passes_filters(record):
-    clinvar = record.INFO.get('CLINVAR', 'NA')
+    # Retrieves the ClinVar (CLIN_SIG) annotation from the vcf record INFO field, if its not present it returns an 'NA'
+    clinvar = record.INFO.get('CLIN_SIG', 'NA')
     # List collecting all individual and cummulative Gnomad allele population frequencies.
-    # TODO: sense check annotation ID e.g.'gnomAD_AFR'
     gnomad_populations = [
-        record.INFO.get('gnomAD_AF', 'NA'),
-        record.INFO.get('gnomAD_AFR', 'NA'),
-        record.INFO.get('gnomAD_AMR', 'NA'),
-        record.INFO.get('gnomAD_ASJ', 'NA'),
-        record.INFO.get('gnomAD_EAS', 'NA'),
-        record.INFO.get('gnomAD_FIN', 'NA'),
-        record.INFO.get('gnomAD_NFE', 'NA'),
-        record.INFO.get('gnomAD_SAS', 'NA')
+        record.INFO.get('gnomADe_AF', 'NA'),       # Overall allele frequency (exome)
+        record.INFO.get('gnomADe_AFR_AF', 'NA'),   # African/African American (exome)
+        record.INFO.get('gnomADe_AMR_AF', 'NA'),   # Admixed American (exome)
+        record.INFO.get('gnomADe_ASJ_AF', 'NA'),   # Ashkenazi Jewish (exome)
+        record.INFO.get('gnomADe_EAS_AF', 'NA'),   # East Asian (exome)
+        record.INFO.get('gnomADe_FIN_AF', 'NA'),   # Finnish (exome)
+        record.INFO.get('gnomADe_NFE_AF', 'NA'),   # Non-Finnish European (exome)
+        record.INFO.get('gnomADe_OTH_AF', 'NA'),   # Other (exome)
+        record.INFO.get('gnomADe_SAS_AF', 'NA'),   # South Asian (exome)
+        record.INFO.get('gnomADg_AF', 'NA'),       # Overall allele frequency (genome)
+        record.INFO.get('gnomADg_AFR_AF', 'NA'),   # African/African American (genome)
+        record.INFO.get('gnomADg_AMI_AF', 'NA'),   # Amish (genome)
+        record.INFO.get('gnomADg_AMR_AF', 'NA'),   # Admixed American (genome)
+        record.INFO.get('gnomADg_ASJ_AF', 'NA'),   # Ashkenazi Jewish (genome)
+        record.INFO.get('gnomADg_EAS_AF', 'NA'),   # East Asian (genome)
+        record.INFO.get('gnomADg_FIN_AF', 'NA'),   # Finnish (genome)
+        record.INFO.get('gnomADg_MID_AF', 'NA'),   # Middle Eastern (genome)
+        record.INFO.get('gnomADg_NFE_AF', 'NA'),   # Non-Finnish European (genome)
+        record.INFO.get('gnomADg_OTH_AF', 'NA'),   # Other (genome)
+        record.INFO.get('gnomADg_SAS_AF', 'NA')    # South Asian (genome)
     ]
 
     # Defining conditional filters. This may need to be expanded and applied to individual Gnomad populations
