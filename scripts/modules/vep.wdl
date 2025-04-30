@@ -9,7 +9,7 @@ task vep {
         Int fork
     }
 
-    String outputName = sub(basename(vcf), "_sorted\\.vcf$", "")
+    String outputName = sub(basename(vcf), "_trimmed\\.vcf$", "")
 
     command <<<
         #copying and unpacking vep tar file/cache
@@ -18,10 +18,10 @@ task vep {
         
         #running vep
         vep \
-        --tab \
+        --vcf \
         --no_stats \
         -i ~{vcf} \
-        -o ~{outputName}_annotated.tsv \
+        -o ~{outputName}_annotated.vcf \
         --assembly GRCh38 \
         --refseq \
         --offline \
@@ -40,7 +40,7 @@ task vep {
     >>>
 
     output {
-        File annotated_vcf = "~{outputName}_annotated.tsv"
+        File annotated_vcf = "~{outputName}_annotated.vcf"
     }
 
     runtime {

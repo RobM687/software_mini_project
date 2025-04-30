@@ -1,0 +1,2 @@
+PyVCF3==1.0.3  # For vcf_fileter_script.py
+pysam==0.23.0  # To enable the install of PyVCF3
