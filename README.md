@@ -26,7 +26,7 @@ Here is a visual representation of the `my_pipeline_modular_wf.wdl` workflow usi
     H -->|VCF| I
     D -->|HTML, ZIP| J
     F -->|HTML, ZIP| J
-    I -->|annotated.tsv| J[**Output Files**]
+    I -->|annotated.vcf| J[**Output Files**]
 
     subgraph Inputs
         B
