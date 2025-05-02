@@ -8,7 +8,7 @@ The final output of the workflow is a filtered VCF file that contains variant ca
 - Variants with GnomAD allele frequencies < 0.05 that are **NOT** marked as '*benign*' in ClinVar.
 - Variants with GnomAD allele frequencies > 0.05 that **ARE** marked as '*pathogenic*' in ClinVar.
 
-This ensures that the output VCF file retains clinically significant variants while filtering out common benign variants. The filtering process is implemented using a Python script that parses the CSQ field of the VCF file, extracts relevant annotations, and applies the defined filters.
+The filtering process is implemented using a Python script that parses the CSQ field of the VCF file, extracts relevant annotations, and applies the defined filters.
 
 ### Pipeline Flowchart
 Here is a visual representation of the `my_pipeline_modular_wf.wdl` workflow using a mermaid flowchart:
