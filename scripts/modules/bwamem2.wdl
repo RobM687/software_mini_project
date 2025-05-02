@@ -14,7 +14,7 @@ task bwamem2 {
     }
 
     # Derive the output name from read1 by removing the 'trimmed_R1.fastq.gz' suffix
-    String outputName = sub(basename(read1), "trimmed_R1\\.fastq.gz$", "")
+    String outputName = sub(basename(read1), "_trimmed_R1\\.fastq.gz$", "")
 
     command <<<
         #this is linked to the block above, it forces the WDL code to recognise the additional reference/index files. The && means the next step in the code cannot proced unless the rpevious has completed successfully 
