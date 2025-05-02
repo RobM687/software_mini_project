@@ -1,42 +1,106 @@
 # software_mini_project for software training module
 
 ## Overview
-This repository contains a modular WDL workflow (`my_pipeline_modular_wf.wdl`) designed to process constitutional, genomic data. The workflow includes quality control, read trimming, alignment, duplicate removal, variant calling, and annotation.
+This repository contains a modular WDL workflow (`my_pipeline_modular_wf.wdl`) designed to process constitutional, genomic data. The workflow includes quality control, read trimming, alignment, duplicate removal, variant calling, annotation, and VCF filtering.
 
-## Installation
-TODO
+The final output of the workflow is a filtered VCF file that contains variant calls annotated by the Variant Effect Predictor (Ensembl VEP). The filtering criteria are based on the following conditions:
 
-## Pipeline Flowchart
+- Variants with GnomAD allele frequencies < 0.05 that are **NOT** marked as '*benign*' in ClinVar.
+- Variants with GnomAD allele frequencies > 0.05 that **ARE** marked as '*pathogenic*' in ClinVar.
+
+The filtering process is implemented using a Python script that parses the CSQ field of the VCF file, extracts relevant annotations, and applies the defined filters.
+
+### Pipeline Flowchart
 Here is a visual representation of the `my_pipeline_modular_wf.wdl` workflow using a mermaid flowchart:
 
 ```mermaid
- graph TD
-    B[**Input Files**: <br>- FASTQ<br>- GRCh38 reference files<br>- BED<br>- VEP.tar.gz]
-    B -->|read1.fastq.gz, read2.fastq.gz| D[**Initial FastQC**:<br>Perform initial QC on read pairs<br><i>fastqc.wdl</i>]
-    B -->|read1.fastq.gz, read2.fastq.gz| E[**FastP**:<br>Trim and filter the read pairs<br><i>fastp.wdl</i>]
-    F[**Post-Processing FastQC**: *Perform quality control on the trimmed read pairs*<br><i>fastqc.wdl</i>]
-    E -->|trimmed FASTQ| F
-    B -->|GRCh38.fa, fa.bwt.2bit.64, .fa.ann, .fa.amb, .fa.pac, .fa.0123, .fa.fai| G[**BwaMem2**:<br>Align reads to the reference genome<br><i>bwamem2.wdl</i>]
-    E -->|trimmed FASTQ| G
-    G -->|BAM, BAI| K[**RemoveDuplicates**:<br>Remove duplicate reads<br><i>remove_dups.wdl</i>]
-    K -->|dedup BAM| L[**IndexDedupBam**:<br>Index the deduplicated BAM file<br><i>remove_dups.wdl</i>]
-    B -->|BED, GRCh38.fa, .fa.fai| H[**FreeBayes**:<br>Call variants<br><i>freebayes.wdl</i>]
-    L -->|dedup BAM, dedup BAI| H
-    B -->|VEP.tar.gz, GRCh38.fa| I[**VEP**:<br>Annotate variants<br><i>vep.wdl</i>]
-    H -->|VCF| I
-    D -->|HTML, ZIP| J
-    F -->|HTML, ZIP| J
-    I -->|annotated.tsv| J[**Output Files**]
+ 
+graph TD
+    A[**Input Files**: <br>- FASTQ<br>- GRCh38 reference files<br>- BED<br>- VEP.tar.gz]
+    A -->|read1.fastq.gz, read2.fastq.gz| B[**Initial FastQC**:<br>Perform initial QC on read pairs<br><i>fastqc.wdl</i>]
+    A -->|read1.fastq.gz, read2.fastq.gz| C[**FastP**:<br>Trim and filter the read pairs<br><i>fastp.wdl</i>]
+    D[**Post-Processing FastQC**: *Perform quality control on the trimmed read pairs*<br><i>fastqc.wdl</i>]
+    C -->|trimmed FASTQ| D
+    A -->|GRCh38.fa, fa.bwt.2bit.64, .fa.ann, .fa.amb, .fa.pac, .fa.0123, .fa.fai| E[**BwaMem2**:<br>Align reads to the reference genome<br><i>bwamem2.wdl</i>]
+    C -->|trimmed FASTQ| E
+    E -->|BAM, BAI| F[**RemoveDuplicates**:<br>Remove duplicate reads<br><i>remove_dups.wdl</i>]
+    F -->|dedup BAM| G[**IndexDedupBam**:<br>Index the deduplicated BAM file<br><i>remove_dups.wdl</i>]
+    A -->|BED, GRCh38.fa, .fa.fai| H[**FreeBayes**:<br>Call variants<br><i>freebayes.wdl</i>]
+    G -->|dedup BAM, dedup BAI| H
+    A -->|VEP.tar.gz, GRCh38.fa| I[**VEP**:<br>Annotate variants<br><i>vep.wdl</i>]
+    H -->|VCF| I
+    I -->|annotated.vcf| J[**VcfFilter**:<br>Filter annotated variants<br><i>vcf_filter.wdl</i>]
+    B -->|HTML, ZIP| K
+    D -->|HTML, ZIP| K
+    J -->|filtered.vcf| K[**Output Files**]
 
-    subgraph Inputs
-        B
-    end
+    subgraph Inputs
+        A
+    end
 
-    subgraph QC
-        D
-        F
-    end 
+    subgraph QC
+        B
+        D
+    end  
 ```
+## Installation
+To set up the workflow, follow these steps:
+
+1. Clone the repository:
+```
+git clone https://github.com/RobM687/software_mini_project.git
+cd software_mini_project
+```
+
+2. Set up and acitvate the Python virual environment:
+```
+python3 -m venv venv
+source venv/bin/activate
+ ```
+
+3. Install dependencies: Install the required Python packages using `requirements.txt`
+```
+pip install -r requirements.txt
+ ```
+
+4. Ensure packages have installed
+```
+pip show <package>
+```
+
+5. Run the workflow: Use `miniwdl` to run the WDL workflow. Replace `config/my_pipeline_modular_inputs.json` with your input JSON file.
+```
+miniwdl run scripts/my_pipeline_modular_wf.wdl -i config/test_inputs.json
+```
+
 ## Inputs
+- **read1**: First read file in FASTQ format. *(Used in fastqc, fastp, bwamem2)*
+- **read2**: Second read file in FASTQ format. *(Used in fastqc, fastp, bwamem2)*
+- **reference_fa**: Reference genome in FASTA format. *(Used in bwamem2)*
+- **reference_fabwt2bit64**: BWT 2-bit 64 file for the reference genome. *(Used in bwamem2)*
+- **reference_faann**: ANN file for the reference genome. *(Used in bwamem2)*
+- **reference_faamb**: AMB file for the reference genome. *(Used in bwamem2)*
+- **reference_fapac**: PAC file for the reference genome. *(Used in bwamem2)*
+- **reference_fa0123**: 0123 file for the reference genome. *(Used in bwamem2)*
+- **reference_fafai**: FAI index file for the reference genome. *(Used in freebayes)*
+- **bed_file**: BED file for regions of interest. *(Used in freebayes)*
+- **vep_tar**: VEP annotation tool tarball. *(Used in vep)*
+- **cache_version**: Cache version for VEP. *(Used in vep)*
+- **fork**: Number of forks for VEP. *(Used in vep)*
 
 ## Outputs
+
+- **initial_qc_reports**: Initial QC reports in HTML format. *(Generated by fastqc)*
+- **initial_qc_summaries**: Initial QC summaries in ZIP format. *(Generated by fastqc)*
+- **post_processing_qc_reports**: Post-processing QC reports in HTML format. *(Generated by fastqc)*
+- **post_processing_qc_summaries**: Post-processing QC summaries in ZIP format. *(Generated by fastqc)*
+- **trimmed_read1**: Trimmed first read file. *(Generated by fastp)*
+- **trimmed_read2**: Trimmed second read file. *(Generated by fastp)*
+- **alignedBam**: Aligned BAM file. *(Generated by bwamem2)*
+- **alignedBai**: Aligned BAI index file. *(Generated by bwamem2)*
+- **dedup_bam**: Deduplicated BAM file. *(Generated by remove_dups)*
+- **dedup_bai**: Deduplicated BAI index file. *(Generated by remove_dups)*
+- **dedup_metrics**: Deduplication metrics file. *(Generated by remove_dups)*
+- **vcf**: VCF file with called variants. *(Generated by freebayes)*
+- **annotated_vcf**: Annotated VCF file. *(Generated by vep)*
+- **filtered_vcf**: Filtered VCF file. *(Generated by vcf_filter)*

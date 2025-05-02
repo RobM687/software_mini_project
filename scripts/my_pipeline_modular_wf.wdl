@@ -6,6 +6,7 @@ import "modules/bwamem2.wdl" as bwamem2
 import "modules/remove_dups.wdl" as remove_dups
 import "modules/freebayes.wdl" as freebayes
 import "modules/vep.wdl" as vep
+import "modules/vcf_filter.wdl" as vcf_filter
 
 workflow my_pipeline_modular {
     input {
@@ -88,6 +89,11 @@ workflow my_pipeline_modular {
             fork = fork
     }
 
+    call vcf_filter.VcfFilter {
+        input:
+            annotated_vcf = vep.annotated_vcf
+    }
+
     output {        
         Array[File] initial_qc_reports = initial_fastqc.qc_reports
         Array[File] initial_qc_summaries = initial_fastqc.qc_summaries
@@ -102,5 +108,6 @@ workflow my_pipeline_modular {
         File dedup_metrics = RemoveDuplicates.dedup_metrics
         File vcf = freebayes.vcf
         File annotated_vcf = vep.annotated_vcf
+        File filtered_vcf = VcfFilter.filtered_vcf
     }
 }
