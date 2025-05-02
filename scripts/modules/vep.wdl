@@ -9,7 +9,7 @@ task vep {
         Int fork
     }
 
-    String outputName = sub(basename(vcf), "_trimmed\\.vcf$", "")
+    String outputName = sub(basename(vcf), ".vcf$", "")
 
     command <<<
         #copying and unpacking vep tar file/cache
