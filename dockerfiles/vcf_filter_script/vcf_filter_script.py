@@ -1,5 +1,6 @@
 import vcf
 
+
 def get_csq_keys(vcf_file):
     """
     Parses the CSQ field of a VCF (VEP generated) and returns a list of its annotations
@@ -32,7 +33,7 @@ def parse_csq_field(csq_value, csq_keys):
     csq_values = csq_value.split('|')
     return dict(zip(csq_keys, csq_values))
 
-def passes_filters(record, csq_keys):  
+def passes_filters(record, csq_keys, config):  
     """
     Determines if a VCF record passes the defined filters.
 
@@ -43,6 +44,10 @@ def passes_filters(record, csq_keys):
     Returns:
         bool: True if the record passes the filters, False otherwise.
     """
+    # Defining filtering thresholds from filter config file
+    low_freq_threshold = float(config["low_freq_threshold"])
+    high_freq_threshold = float(config["high_freq_threshold"])
+    
     # Parsing the the CSQ field
     csq_values = record.INFO.get('CSQ', ['NA'])
     csq_annotations = [parse_csq_field(csq, csq_keys) for csq in csq_values]
@@ -89,11 +94,11 @@ def passes_filters(record, csq_keys):
     #print(f"GnomAD Populations: {gnomad_populations}")  # For debugging
 
     # Defining conditional filters. This may need to be expanded and applied to individual Gnomad populations
-    if any(freq and float(freq) < 0.05 for freq in gnomad_populations):
+    if any(freq and float(freq) < low_freq_threshold for freq in gnomad_populations):
         if not (clinvar and 'benign' in clinvar.lower()):
             print(f"Record {record.CHROM}:{record.POS} passes filters: Gnomad allele frequency < 0.05 and not benign in ClinVar.")
             return True  #Gnomad allele frequency < 0.05 AND NOT clinvar 'benign'
-    elif any(freq and float(freq) > 0.05 for freq in gnomad_populations):
+    elif any(freq and float(freq) > high_freq_threshold for freq in gnomad_populations):
         if clinvar and 'pathogenic' in clinvar.lower():
             print(f"Record {record.CHROM}:{record.POS} passes filters: Gnomad allele frequency > 0.05 and pathogenic in ClinVar.")
             return True  #Gnomad allele frequency > 0.05 AND clinvar 'pathogenic'
@@ -114,7 +119,7 @@ def filter_vcf(input_vcf, output_vcf):
     vcf_reader = vcf.Reader(open(input_vcf, 'r'))
 
     # Uses list comprehension to iterate through each vcf record (single variant), filter them using the passes_filer function and collect those 'True' records in the filtered_records list.
-    filtered_records = [record for record in vcf_reader if passes_filters(record, csq_keys)]
+    filtered_records = [record for record in vcf_reader if passes_filters(record, csq_keys, config)]
 
     # Create a new vcf_writer object using the vcf.writer class in the PyVCF/vcf module.
     vcf_writer = vcf.Writer(open(output_vcf, 'w'), vcf_reader)
@@ -129,15 +134,28 @@ def filter_vcf(input_vcf, output_vcf):
 
 if __name__ == "__main__":
     import argparse
+    import json
 
     # Set up argument parser
     parser = argparse.ArgumentParser(description="Filter VCF file based on Gnomad allele frequencies and ClinVar annotations.")
     parser.add_argument("input_vcf", help="Input VCF file to be filtered.")
     parser.add_argument("output_vcf", help="Output VCF file after filtering.")
+    parser.add_argument("--config", required=True, help="Path to JSON config file with filtering parameters.")
 
     # Parse arguments
     args = parser.parse_args()
 
+    # Parsing config file and loading contents in config library
+    config = {}
+    if args.config:
+        with open(args.config) as f:
+            config = json.load(f)
+
+    required_keys = ["low_freq_threshold", "high_freq_threshold"]
+    missing_keys = [key for key in required_keys if key not in config]
+    if missing_keys:
+        raise ValueError(f"Missing required config keys: {','.join(missing_keys)}")
+    
     # Call the filter function
     filter_vcf(args.input_vcf, args.output_vcf)
     # Print a message indicating completion
