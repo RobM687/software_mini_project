@@ -23,6 +23,8 @@ workflow my_pipeline_modular {
         File vep_tar
         String cache_version
         Int fork
+        File vcf_filter_script
+        File filter_config
         # Do i need a defined output directory OutputDir?
     }
 
@@ -91,7 +93,9 @@ workflow my_pipeline_modular {
 
     call vcf_filter.VcfFilter {
         input:
-            annotated_vcf = vep.annotated_vcf
+            annotated_vcf = vep.annotated_vcf,
+            vcf_filter_script = vcf_filter_script,
+            filter_config = filter_config
     }
 
     output {        
