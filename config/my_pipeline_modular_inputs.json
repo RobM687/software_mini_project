@@ -11,5 +11,7 @@
     "my_pipeline_modular.reference_fafai": "/pathto_ref.fa.fai",
     "my_pipeline_modular.cache_version": "111",
     "my_pipeline_modular.fork": 16,
-    "my_pipeline_modular.vep": "/pathto_vep.tar.gz"
+    "my_pipeline_modular.vep": "/pathto_vep.tar.gz",
+    "my_pipeline_modular.vcf_filter_script": "dockerfiles/vcf_filter_script/vcf_filter_script.py",
+    "my_pipeline_modular.filter_config": "config/filter_config.json"
   }
