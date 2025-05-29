@@ -1,14 +1,16 @@
 # software_mini_project for software training module
 
 ## Overview
-This repository contains a modular WDL workflow (`my_pipeline_modular_wf.wdl`) designed to process constitutional, genomic data. The workflow includes quality control, read trimming, alignment, duplicate removal, variant calling, annotation, and VCF filtering.
+This repository contains a modular WDL workflow (`my_pipeline_modular_wf.wdl`) designed to process constitutional genomic data. The workflow includes quality control, read trimming, alignment, duplicate removal, variant calling, annotation, and VCF filtering.
+
+The workflow is structured using modular WDL imports and uses a `Sample` struct to define paired-end FASTQ inputs. It uses a `scatter` block to parallelize processing across multiple samples
 
 The final output of the workflow is a filtered VCF file that contains variant calls annotated by the Variant Effect Predictor (Ensembl VEP). The filtering criteria are based on the following conditions:
 
 - Variants with GnomAD allele frequencies < 0.05 that are **NOT** marked as '*benign*' in ClinVar.
 - Variants with GnomAD allele frequencies > 0.05 that **ARE** marked as '*pathogenic*' in ClinVar.
 
-The filtering process is implemented using a Python script that parses the CSQ field of the VCF file, extracts relevant annotations, and applies the defined filters.
+The filtering is implemented via a Python script that parses the CSQ field of the VCF file, extracts relevant annotations, and applies the defined filters. The filtering thresholds for the Gnomad allele frequencies are stored in the `filter_config.json`.
 
 ### Pipeline Flowchart
 Here is a visual representation of the `my_pipeline_modular_wf.wdl` workflow using a mermaid flowchart:
@@ -16,31 +18,45 @@ Here is a visual representation of the `my_pipeline_modular_wf.wdl` workflow usi
 ```mermaid
  
 graph TD
-    A[**Input Files**: <br>- FASTQ<br>- GRCh38 reference files<br>- BED<br>- VEP.tar.gz]
-    A -->|read1.fastq.gz, read2.fastq.gz| B[**Initial FastQC**:<br>Perform initial QC on read pairs<br><i>fastqc.wdl</i>]
-    A -->|read1.fastq.gz, read2.fastq.gz| C[**FastP**:<br>Trim and filter the read pairs<br><i>fastp.wdl</i>]
-    D[**Post-Processing FastQC**: *Perform quality control on the trimmed read pairs*<br><i>fastqc.wdl</i>]
-    C -->|trimmed FASTQ| D
-    A -->|GRCh38.fa, fa.bwt.2bit.64, .fa.ann, .fa.amb, .fa.pac, .fa.0123, .fa.fai| E[**BwaMem2**:<br>Align reads to the reference genome<br><i>bwamem2.wdl</i>]
-    C -->|trimmed FASTQ| E
+    A[**Input Files**: <br>- FASTQ<br>- GRCh38 reference files<br>- BED<br>- VEP.tar.gz<br>- vcf_filter_script.py<br>- filter_config.json]
+    A -->|Sample struct<br>read1.fastq.gz, read2.fastq.gz| S[**Scatter over samples**:<br>Parallel processing]
+    S --> B[**Initial FastQC**:<br>Perform initial QC on read pairs<br><i>fastqc.wdl</i>]
+    S --> C[**FastP**:<br>Trim and filter the read pairs<br><i>fastp.wdl</i>]
+    C --> D[**Post-Processing FastQC**: *Perform quality control on the trimmed read pairs*<br><i>fastqc.wdl</i>]
+    C -->|trimmed FASTQ| E[**BwaMem2**:<br>Align reads to the reference genome<br><i>bwamem2.wdl</i>]
+    A -->|GRCh38 reference files| E
     E -->|BAM, BAI| F[**RemoveDuplicates**:<br>Remove duplicate reads<br><i>remove_dups.wdl</i>]
     F -->|dedup BAM| G[**IndexDedupBam**:<br>Index the deduplicated BAM file<br><i>remove_dups.wdl</i>]
-    A -->|BED, GRCh38.fa, .fa.fai| H[**FreeBayes**:<br>Call variants<br><i>freebayes.wdl</i>]
-    G -->|dedup BAM, dedup BAI| H
-    A -->|VEP.tar.gz, GRCh38.fa| I[**VEP**:<br>Annotate variants<br><i>vep.wdl</i>]
-    H -->|VCF| I
+    G --> |dedup BAM, dedup BAI| H[**FreeBayes**:<br>Call variants<br><i>freebayes.wdl</i>]
+    A -->|BED, <br>GRCh38.fa reference files| H
+    H -->|VCF| I[**VEP**:<br>Annotate variants<br><i>vep.wdl</i>]
+    A -->|VEP.tar.gz, GRCh38.fa| I
     I -->|annotated.vcf| J[**VcfFilter**:<br>Filter annotated variants<br><i>vcf_filter.wdl</i>]
-    B -->|HTML, ZIP| K
+    A -->|vcf_filter_script.py, <br>filter_config.json| J
+    B -->|HTML, ZIP| K[**Output Files**]
     D -->|HTML, ZIP| K
-    J -->|filtered.vcf| K[**Output Files**]
+    F -->|dedup_metrics.txt| K
+    J -->|filtered.vcf| K
 
     subgraph Inputs
         A
     end
 
-    subgraph QC
-        B
-        D
+    subgraph Scatter Processing
+        S
+        C
+        E
+        F
+        G
+        H
+        I
+        J
+
+        subgraph QC
+           B
+           D
+        end
+        
     end  
 ```
 ## Installation
@@ -68,14 +84,18 @@ pip install -r requirements.txt
 pip show <package>
 ```
 
-5. Run the workflow: Use `miniwdl` to run the WDL workflow. Replace `config/my_pipeline_modular_inputs.json` with your input JSON file.
+5. Run the workflow from the project root: Use `miniwdl` to run the WDL workflow. Replace `config/my_pipeline_modular_inputs.json` with your input JSON file.
 ```
 miniwdl run scripts/my_pipeline_modular_wf.wdl -i config/test_inputs.json
 ```
 
+
+
 ## Inputs
+### samples: An array of `Sample` structs, each containing:
 - **read1**: First read file in FASTQ format. *(Used in fastqc, fastp, bwamem2)*
 - **read2**: Second read file in FASTQ format. *(Used in fastqc, fastp, bwamem2)*
+### Other inputs:
 - **reference_fa**: Reference genome in FASTA format. *(Used in bwamem2)*
 - **reference_fabwt2bit64**: BWT 2-bit 64 file for the reference genome. *(Used in bwamem2)*
 - **reference_faann**: ANN file for the reference genome. *(Used in bwamem2)*
@@ -87,6 +107,8 @@ miniwdl run scripts/my_pipeline_modular_wf.wdl -i config/test_inputs.json
 - **vep_tar**: VEP annotation tool tarball. *(Used in vep)*
 - **cache_version**: Cache version for VEP. *(Used in vep)*
 - **fork**: Number of forks for VEP. *(Used in vep)*
+- **vcf_filter_script**: Python script for filtering annotated VCF. *(Used in vcf_filter)*
+- **filter_config**: JSON config for filtering criteria. *(Used in vcf_filter)*
 
 ## Outputs
 
@@ -104,3 +126,58 @@ miniwdl run scripts/my_pipeline_modular_wf.wdl -i config/test_inputs.json
 - **vcf**: VCF file with called variants. *(Generated by freebayes)*
 - **annotated_vcf**: Annotated VCF file. *(Generated by vep)*
 - **filtered_vcf**: Filtered VCF file. *(Generated by vcf_filter)*
+
+## Struct Definitions
+the workflow uses a custom `Sample` struct defined in `modules/structs.wdl`
+```
+struct Sample {
+    File read1
+    File read2
+}
+```
+## Input JSON Schema
+The `input.json` file proves all the necessary inputs for running the workflow. Below is a breakdown of the `config/my_pipeline_modular_inputs.json` file with its expected keys and corresponding value types:
+```
+{
+  "my_pipeline_modular.samples": [
+    {
+      "read1": "File (path to read1 FASTQ file)",
+      "read2": "File (path to read2 FASTQ file)"
+    }
+  ],
+  "my_pipeline_modular.reference_fa": "File (path to GRCh38_reference.fa)",
+  "my_pipeline_modular.reference_fabwt2bit64": "File (path to GRCh38_reference.bwt.2bit.64 index)",
+  "my_pipeline_modular.reference_faann": "File (path to GRCh38_reference.ann index)",
+  "my_pipeline_modular.reference_faamb": "File (path to GRCh38_reference.amb index)",
+  "my_pipeline_modular.reference_fapac": "File (path to GRCh38_reference.pac index)",
+  "my_pipeline_modular.reference_fa0123": "File (path to GRCh38_reference.0123 index)",
+  "my_pipeline_modular.reference_fafai": "File (path to GRCh38_reference.fai index)",
+  "my_pipeline_modular.bed_file": "File (path to BED file)",
+  "my_pipeline_modular.vep": "File (path to VEP tar.gz)",
+  "my_pipeline_modular.cache_version": "String (VEP cache version)",
+  "my_pipeline_modular.fork": "Int (number of forks for VEP)",
+  "my_pipeline_modular.vcf_filter_script": "File (path to VCF filtering script)",
+  "my_pipeline_modular.filter_config": "File (path to JSON config for filtering)"
+}
+```
+- Ensure all file paths point to existing, accessible files.
+- Each Sample must include both read1 and read2.
+- Set fork based on available CPU cores. Too high a value may cause memory issues.
+- Omitting required keys (e.g., reference_fafai) will cause the workflow to fail.
+
+## Filter Config JSON Schema
+The `filter_config.json` file defines the allele frequency thresholds used during the VCF filtering step. These thresholds determine which variants are retained based on their frequency in the GnomAD database, alongside their ClinVar status annotations.
+```
+{
+    "low_freq_threshold": 0.05,
+    "high_freq_threshold": 0.05
+}
+```
+**low_freq_threshold** (Float):
+Variants with a GnomAD allele frequency below this threshold are retained only if they are not marked as 'benign' in ClinVar.
+
+**high_freq_threshold** (Float):
+Variants with a GnomAD allele frequency above this threshold are retained only if they are marked as 'pathogenic' in ClinVar.
+
+- Omitting either threshold will cause the filtering script to fail or behave unpredictably.
+- Values must be numeric (floats), not strings (e.g., "0.05" is incorrect).

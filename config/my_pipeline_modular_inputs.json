@@ -1,17 +1,21 @@
 {
-    "my_pipeline_modular.read2": "/pathtosample_read2_S1_R2_001.fastq.gz",
-    "my_pipeline_modular.read1": "/pathtosample_read1_S1_R1_001.fastq.gz",
-    "my_pipeline_modular.reference_fa": "/pathto_ref.fa",
-    "my_pipeline_modular.reference_fabwt2bit64": "/pathto_ref.fa.bwt.2bit.64",
-    "my_pipeline_modular.reference_faann": "/pathto_ref.fa.ann",
-    "my_pipeline_modular.reference_faamb": "/pathto_ref.fa.amb",
-    "my_pipeline_modular.reference_fapac": "/pathto_ref.fa.pac",
-    "my_pipeline_modular.reference_fa0123": "/pathto_ref.fa.0123",
-    "my_pipeline_modular.bed_file": "/pathto_bedfile.bed",
-    "my_pipeline_modular.reference_fafai": "/pathto_ref.fa.fai",
+    "my_pipeline_modular.samples": [
+        {
+            "read1": "/pathto/sample_read1_S1_R1_001.fastq.gz",
+            "read2": "/pathto/sample_read2_S1_R2_001.fastq.gz"
+        }
+    ],
+    "my_pipeline_modular.reference_fa": "/pathto/GRCh38_ref.fa",
+    "my_pipeline_modular.reference_fabwt2bit64": "/pathto/GRCh38_ref.fa.bwt.2bit.64",
+    "my_pipeline_modular.reference_faann": "/pathto/GRCh38_ref.fa.ann",
+    "my_pipeline_modular.reference_faamb": "/pathto/GRCh38_ref.fa.amb",
+    "my_pipeline_modular.reference_fapac": "/pathto/GRCh38_ref.fa.pac",
+    "my_pipeline_modular.reference_fa0123": "/pathto/GRCh38_ref.fa.0123",
+    "my_pipeline_modular.bed_file": "/pathto/bedfile.bed",
+    "my_pipeline_modular.reference_fafai": "/pathto/GRCh38_ref.fa.fai",
     "my_pipeline_modular.cache_version": "111",
     "my_pipeline_modular.fork": 16,
-    "my_pipeline_modular.vep": "/pathto_vep.tar.gz",
+    "my_pipeline_modular.vep": "/pathto/vep.tar.gz",
     "my_pipeline_modular.vcf_filter_script": "dockerfiles/vcf_filter_script/vcf_filter_script.py",
     "my_pipeline_modular.filter_config": "config/filter_config.json"
-  }
+    }
