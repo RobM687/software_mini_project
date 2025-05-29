@@ -1,6 +1,10 @@
 {
-    "my_pipeline_modular.read2": "/pathtosample_read2_S1_R2_001.fastq.gz",
-    "my_pipeline_modular.read1": "/pathtosample_read1_S1_R1_001.fastq.gz",
+    "my_pipeline_modular.samples": [
+        {
+            "read1": "/pathtosample_read1_S1_R1_001.fastq.gz",
+            "read2": "/pathtosample_read2_S1_R2_001.fastq.gz"
+        }
+    ],
     "my_pipeline_modular.reference_fa": "/pathto_ref.fa",
     "my_pipeline_modular.reference_fabwt2bit64": "/pathto_ref.fa.bwt.2bit.64",
     "my_pipeline_modular.reference_faann": "/pathto_ref.fa.ann",
@@ -14,4 +18,4 @@
     "my_pipeline_modular.vep": "/pathto_vep.tar.gz",
     "my_pipeline_modular.vcf_filter_script": "dockerfiles/vcf_filter_script/vcf_filter_script.py",
     "my_pipeline_modular.filter_config": "config/filter_config.json"
-  }
+    }
