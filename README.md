@@ -134,3 +134,50 @@ struct Sample {
     File read1
     File read2
 }
+```
+## Input JSON Schema
+The `input.json` file proves all the necessary inputs for running the workflow. Below is a breakdown of the `config/my_pipeline_modular_inputs.json` file with its expected keys and corresponding value types:
+```
+{
+  "my_pipeline_modular.samples": [
+    {
+      "read1": "File (path to read1 FASTQ file)",
+      "read2": "File (path to read2 FASTQ file)"
+    }
+  ],
+  "my_pipeline_modular.reference_fa": "File (path to GRCh38_reference.fa)",
+  "my_pipeline_modular.reference_fabwt2bit64": "File (path to GRCh38_reference.bwt.2bit.64 index)",
+  "my_pipeline_modular.reference_faann": "File (path to GRCh38_reference.ann index)",
+  "my_pipeline_modular.reference_faamb": "File (path to GRCh38_reference.amb index)",
+  "my_pipeline_modular.reference_fapac": "File (path to GRCh38_reference.pac index)",
+  "my_pipeline_modular.reference_fa0123": "File (path to GRCh38_reference.0123 index)",
+  "my_pipeline_modular.reference_fafai": "File (path to GRCh38_reference.fai index)",
+  "my_pipeline_modular.bed_file": "File (path to BED file)",
+  "my_pipeline_modular.vep": "File (path to VEP tar.gz)",
+  "my_pipeline_modular.cache_version": "String (VEP cache version)",
+  "my_pipeline_modular.fork": "Int (number of forks for VEP)",
+  "my_pipeline_modular.vcf_filter_script": "File (path to VCF filtering script)",
+  "my_pipeline_modular.filter_config": "File (path to JSON config for filtering)"
+}
+```
+- Ensure all file paths point to existing, accessible files.
+- Each Sample must include both read1 and read2.
+- Set fork based on available CPU cores. Too high a value may cause memory issues.
+- Omitting required keys (e.g., reference_fafai) will cause the workflow to fail.
+
+## Filter Config JSON Schema
+The `filter_config.json` file defines the allele frequency thresholds used during the VCF filtering step. These thresholds determine which variants are retained based on their frequency in the GnomAD database, alongside their ClinVar status annotations.
+```
+{
+    "low_freq_threshold": 0.05,
+    "high_freq_threshold": 0.05
+}
+```
+**low_freq_threshold** (Float):
+Variants with a GnomAD allele frequency below this threshold are retained only if they are not marked as 'benign' in ClinVar.
+
+**high_freq_threshold** (Float):
+Variants with a GnomAD allele frequency above this threshold are retained only if they are marked as 'pathogenic' in ClinVar.
+
+- Omitting either threshold will cause the filtering script to fail or behave unpredictably.
+- Values must be numeric (floats), not strings (e.g., "0.05" is incorrect).
