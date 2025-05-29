@@ -163,7 +163,7 @@ The `input.json` file proves all the necessary inputs for running the workflow. 
 - Ensure all file paths point to existing, accessible files.
 - Each Sample must include both read1 and read2.
 - Set fork based on available CPU cores. Too high a value may cause memory issues.
-- Omitting required keys (e.g., reference_fafai) will cause the workflow to fail.
+- Omitting required keys (e.g., `reference_fafai`) will cause the workflow to fail.
 
 ## Filter Config JSON Schema
 The `filter_config.json` file defines the allele frequency thresholds used during the VCF filtering step. These thresholds determine which variants are retained based on their frequency in the GnomAD database, alongside their ClinVar status annotations.
@@ -180,4 +180,4 @@ Variants with a GnomAD allele frequency below this threshold are retained only i
 Variants with a GnomAD allele frequency above this threshold are retained only if they are marked as 'pathogenic' in ClinVar.
 
 - Omitting either threshold will cause the filtering script to fail or behave unpredictably.
-- Values must be numeric (floats), not strings (e.g., "0.05" is incorrect).
+- Values must be numeric (floats), not strings (e.g., `"0.05"` is incorrect).
