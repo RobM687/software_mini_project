@@ -3,7 +3,10 @@ import vcf
 
 def get_csq_keys(vcf_file):
     """
-    Parses the CSQ field of a VCF (VEP generated) and returns a list of its annotations
+    Extracts the CSQ annotation keys from the VCF header.
+
+    This function searches for the '##INFO=<ID=CSQ' line in a VEP-annotated VCF file
+    and parses the annotation format to return a list of CSQ field keys
 
     Args:
         vcf_file (str): Path to the VCF file.
@@ -26,11 +29,13 @@ def get_csq_keys(vcf_file):
 def parse_csq_field(csq_value, csq_keys):
     """
     Parses a CSQ field value and returns a dictionary of its annotations.
+    
     Args:
         csq_value (str): The CSQ field value from a VCF record.
         csq_keys (list): The list of CSQ keys.
+    
     Returns:
-        dict: A dictionary of annotations.
+        dict: A dictionary mapping CSQ keys to their corresponding values.
     """
     # This splits the vcf record CSQ string at '|' saving the csq values alongside the csq keys as a zipped dictionary
     csq_values = csq_value.split('|')
@@ -43,7 +48,7 @@ def passes_filters(record, csq_keys, config):
     Args:
         record (vcf.model._Record): A single variant call in a VCF record.
         csq_keys (list): The list of CSQ keys.
-        config (dict): Configuration with filtering thresholds.
+        config (dict): Dictionary with filtering thresholds.
 
     Returns:
         bool: True if the record passes the filters, False otherwise.
