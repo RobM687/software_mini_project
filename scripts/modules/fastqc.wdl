@@ -15,8 +15,8 @@ task fastqc {
     >>>
 
     output {
-        Array[File] qc_reports = glob("*_fastqc.zip")  # This now includes wildcard '*' to ensure all _fastqc.zip files are captured in the glob
-        Array[File] qc_summaries = glob("*_fastqc.html")  # This now includes wildcard '*' to ensure all _fastqc.html files are captured in the glob
+        Array[File?] qc_reports = glob("*_fastqc.zip")  # This now includes wildcard '*' to ensure all _fastqc.zip files are captured in the glob
+        Array[File?] qc_summaries = glob("*_fastqc.html")  # This now includes wildcard '*' to ensure all _fastqc.html files are captured in the glob
     }
 
     runtime {

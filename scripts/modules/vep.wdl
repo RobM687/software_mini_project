@@ -3,7 +3,7 @@ version 1.0
 task vep {
     input {
         File vep_tar
-        File vcf
+        File? vcf
         File reference_fa
         String cache_version
         Int fork
@@ -40,7 +40,7 @@ task vep {
     >>>
 
     output {
-        File annotated_vcf = "~{outputName}_annotated.vcf"
+        File? annotated_vcf = "~{outputName}_annotated.vcf"
     }
 
     runtime {

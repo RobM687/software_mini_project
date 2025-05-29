@@ -4,8 +4,8 @@ task freebayes {
     input {
         File reference_fa
         File reference_fafai
-        File alignedBam
-        File alignedBai
+        File? alignedBam
+        File? alignedBai
         File bed_file
     }
 
@@ -20,7 +20,7 @@ task freebayes {
     >>>
 
     output {
-        File vcf = "~{outputName}.vcf"
+        File? vcf = "~{outputName}.vcf"
     }
 
     runtime {

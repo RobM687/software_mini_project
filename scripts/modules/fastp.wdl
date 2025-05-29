@@ -18,10 +18,10 @@ task fastp {
 
     # Define the output files
     output {
-        File trimmed_read1 = "~{outputName}_trimmed_R1.fastq.gz"
-        File trimmed_read2 = "~{outputName}_trimmed_R2.fastq.gz"
-        File ReportHtml = "~{outputName}_fastp.html"
-        File ReportJson = "~{outputName}_fastp.json"
+        File? trimmed_read1 = "~{outputName}_trimmed_R1.fastq.gz"
+        File? trimmed_read2 = "~{outputName}_trimmed_R2.fastq.gz"
+        File? ReportHtml = "~{outputName}_fastp.html"
+        File? ReportJson = "~{outputName}_fastp.json"
     }
 
     # Specify the Docker image to use for this task

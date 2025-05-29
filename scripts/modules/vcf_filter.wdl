@@ -2,7 +2,7 @@ version 1.0
 
 task VcfFilter {
     input {
-        File annotated_vcf
+        File? annotated_vcf
         File vcf_filter_script
         File filter_config
     }
@@ -14,7 +14,7 @@ task VcfFilter {
     >>>
 
     output {
-        File filtered_vcf = "~{outputName}_filtered.vcf"
+        File? filtered_vcf = "~{outputName}_filtered.vcf"
     }
 
     runtime {

@@ -9,8 +9,8 @@ task bwamem2 {
         File reference_faamb    #BWA-MEM2 index file
         File reference_fapac    #BWA-MEM2 index file
         File reference_fa0123   #BWA-MEM2 index file
-        File read1
-        File read2
+        File? read1
+        File? read2
     }
 
     # Derive the output name from read1 by removing the 'trimmed_R1.fastq.gz' suffix
@@ -41,8 +41,8 @@ task bwamem2 {
     >>>
 
     output {
-        File alignedBam = "~{outputName}_sorted.bam"
-        File alignedBai = "~{outputName}_sorted.bam.bai"
+        File? alignedBam = "~{outputName}_sorted.bam"
+        File? alignedBai = "~{outputName}_sorted.bam.bai"
     }
 
     runtime {

@@ -98,19 +98,19 @@ workflow my_pipeline_modular {
     }
 
     output {        
-        Array[Array[File]] initial_qc_reports = initial_fastqc.qc_reports
-        Array[Array[File]] initial_qc_summaries = initial_fastqc.qc_summaries
-        Array[Array[File]] post_processing_qc_reports = post_processing_fastqc.qc_reports
-        Array[Array[File]] post_processing_qc_summaries = post_processing_fastqc.qc_summaries
-        Array[File] trimmed_read1 = run_fastp.trimmed_read1
-        Array[File] trimmed_read2 = run_fastp.trimmed_read2
-        Array[File] alignedBam = run_bwamem2.alignedBam
-        Array[File] alignedBai = run_bwamem2.alignedBai
-        Array[File] dedup_bam = RemoveDuplicates.dedup_bam
-        Array[File] dedup_bai = IndexDedupBam.dedup_bai
-        Array[File] dedup_metrics = RemoveDuplicates.dedup_metrics
-        Array[File] vcf = run_freebayes.vcf
-        Array[File] annotated_vcf = run_vep.annotated_vcf
-        Array[File] filtered_vcf = VcfFilter.filtered_vcf
+        Array[Array[File?]] initial_qc_reports = initial_fastqc.qc_reports
+        Array[Array[File?]] initial_qc_summaries = initial_fastqc.qc_summaries
+        Array[Array[File?]] post_processing_qc_reports = post_processing_fastqc.qc_reports
+        Array[Array[File?]] post_processing_qc_summaries = post_processing_fastqc.qc_summaries
+        Array[File?] trimmed_read1 = run_fastp.trimmed_read1
+        Array[File?] trimmed_read2 = run_fastp.trimmed_read2
+        Array[File?] alignedBam = run_bwamem2.alignedBam
+        Array[File?] alignedBai = run_bwamem2.alignedBai
+        Array[File?] dedup_bam = RemoveDuplicates.dedup_bam
+        Array[File?] dedup_bai = IndexDedupBam.dedup_bai
+        Array[File?] dedup_metrics = RemoveDuplicates.dedup_metrics
+        Array[File?] vcf = run_freebayes.vcf
+        Array[File?] annotated_vcf = run_vep.annotated_vcf
+        Array[File?] filtered_vcf = VcfFilter.filtered_vcf
     }
 }
