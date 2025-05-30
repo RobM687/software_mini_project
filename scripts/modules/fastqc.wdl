@@ -8,6 +8,7 @@ task fastqc {
     command <<<
         for file in ~{sep=' ' fastq_files}; do
             fastqc $file
+        done
         true
     >>>
 
