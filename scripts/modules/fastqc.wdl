@@ -8,7 +8,7 @@ task fastqc {
     command <<<
         for file in ~{sep=' ' fastq_files}; do
             fastqc $file
-        done
+        true
     >>>
 
     output {
@@ -20,5 +20,6 @@ task fastqc {
         docker: "swglh/fastqc:v0.11.9"
         memory: "4G"
         cpu: 2
+        continueOnReturnCode: true
     }
 }

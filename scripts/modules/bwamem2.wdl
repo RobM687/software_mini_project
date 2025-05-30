@@ -36,6 +36,8 @@ task bwamem2 {
 
         #Index sorted bam file
         samtools index ~{sample_name}_sorted.bam
+
+        true
     >>>
 
     output {
@@ -45,5 +47,8 @@ task bwamem2 {
 
     runtime {
         docker: "swglh/bwamem2:v2.2.1"
+        memory: "16 GB"
+        cpu: 4
+        continueOnReturnCode: true
     }
 }

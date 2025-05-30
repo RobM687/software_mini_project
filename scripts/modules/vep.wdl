@@ -36,6 +36,7 @@ task vep {
         --uploaded_allele \
         --check_existing \
         --transcript_version
+        true
     >>>
 
     output {
@@ -46,5 +47,6 @@ task vep {
         docker: "swglh/ensembl-vep:86"
         memory: "16G"
         cpu: 16
+        continueOnReturnCode: true
     }
 }

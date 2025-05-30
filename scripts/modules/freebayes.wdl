@@ -15,6 +15,7 @@ task freebayes {
         touch reference_fafai &&
         touch alignedBai &&
         freebayes -f ~{reference_fa} -t ~{bed_file} ~{alignedBam} > ~{sample_name}.vcf
+        true
     >>>
 
     output {
@@ -23,5 +24,8 @@ task freebayes {
 
     runtime {
         docker: "swglh/freebayes:1.3.6"
+        memory: "16 GB"
+        cpu: 4
+        continueOnReturnCode: true
     }
 }

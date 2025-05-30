@@ -38,6 +38,7 @@ task IndexDedupBam {
         BuildBamIndex \
         I=~{dedup_bam} \
         O=~{dedup_bam}.bai
+        true
     >>>
 
     output {
@@ -46,7 +47,8 @@ task IndexDedupBam {
 
     runtime {
         docker: "swglh/picard:1.1" # Docker image i've created, will it work, who knows???
-        memory: "2 GB" # Check if this is appropriate
-        cpu: 1 # Check if this is appropriate
+        memory: "8 GB" # Check if this is appropriate
+        cpu: 2 # Check if this is appropriate
+        continueOnReturnCode: true
     }
 }

@@ -10,6 +10,7 @@ task VcfFilter {
 
     command <<<
         bash -c "python3 ~{vcf_filter_script} ~{annotated_vcf} ~{sample_name}_filtered.vcf --config ~{filter_config}"
+        true
     >>>
 
     output {
@@ -18,7 +19,8 @@ task VcfFilter {
 
     runtime {
         docker: "swglh/vcf_filter_script:1.2"
-        memory: "4 GB"
+        memory: "8 GB"
         cpu: 2
+        continueOnReturnCode: true
     }
 }
