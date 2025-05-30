@@ -1,13 +1,10 @@
-version 1.0
+version 1.1
 
 task fastqc {
     input {
-        Array[File] fastq_files
-        File read1  # This is just being used to establish the output file names, the fastqc task is run on all fastq files named in the fastq_files array
+        Array[File?] fastq_files
     }
-
-    String outputName = sub(basename(read1), "_R1_001\\.fastq.gz$", "")
-
+    
     command <<<
         for file in ~{sep=' ' fastq_files}; do
             fastqc $file

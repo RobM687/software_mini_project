@@ -1,4 +1,4 @@
-version 1.0
+version 1.1
 
 task freebayes {
     input {
@@ -7,20 +7,18 @@ task freebayes {
         File? alignedBam
         File? alignedBai
         File bed_file
+        String sample_name
     }
-
-    # Derive the output name from read1 by removing the '_R1.fastq.gz' suffix
-    String outputName = sub(basename(alignedBam), "_dedup\\.bam$", "")
 
     command <<<
         #running Freebayes in standard configuration
         touch reference_fafai &&
         touch alignedBai &&
-        freebayes -f ~{reference_fa} -t ~{bed_file} ~{alignedBam} > ~{outputName}.vcf
+        freebayes -f ~{reference_fa} -t ~{bed_file} ~{alignedBam} > ~{sample_name}.vcf
     >>>
 
     output {
-        File? vcf = "~{outputName}.vcf"
+        File? vcf = "~{sample_name}.vcf"
     }
 
     runtime {

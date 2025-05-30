@@ -1,20 +1,19 @@
-version 1.0
+version 1.1
 
 task VcfFilter {
     input {
         File? annotated_vcf
         File vcf_filter_script
         File filter_config
+        String sample_name
     }
 
-    String outputName = sub(basename(annotated_vcf), "_annotated\\.vcf$", "")
-
     command <<<
-        bash -c "python3 ~{vcf_filter_script} ~{annotated_vcf} ~{outputName}_filtered.vcf --config ~{filter_config}"
+        bash -c "python3 ~{vcf_filter_script} ~{annotated_vcf} ~{sample_name}_filtered.vcf --config ~{filter_config}"
     >>>
 
     output {
-        File? filtered_vcf = "~{outputName}_filtered.vcf"
+        File? filtered_vcf = "~{sample_name}_filtered.vcf"
     }
 
     runtime {

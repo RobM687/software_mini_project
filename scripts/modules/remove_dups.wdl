@@ -1,24 +1,22 @@
-version 1.0
+version 1.1
 
 task RemoveDuplicates {
     input {
         File? alignedBam
         File? alignedBai
+        String sample_name
     }
-
-     # Derive the output name from alignedBam by removing the '_sorted.bam' suffix
-    String outputName = sub(basename(alignedBam), "_sorted\\.bam$", "")
 
     command <<<
         java -jar /app/picard.jar \
         MarkDuplicates \
         I=~{alignedBam} \
-        O=~{outputName}_dedup.bam \
+        O=~{sample_name}_dedup.bam \
         M=dedup_metrics.txt
     >>>
 
     output {
-        File? dedup_bam = "~{outputName}_dedup.bam"
+        File? dedup_bam = "~{sample_name}_dedup.bam"
         File? dedup_metrics = "dedup_metrics.txt"
     }
 
@@ -34,9 +32,6 @@ task IndexDedupBam {
     input {
         File? dedup_bam
     }
-
-    # Derive the output name from read1 by removing the '_dedup.bam' suffix
-    String outputName = sub(basename(dedup_bam), "_dedup\\.bam$", "")
 
     command <<<
         java -jar /app/picard.jar \

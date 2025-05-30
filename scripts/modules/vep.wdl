@@ -1,4 +1,4 @@
-version 1.0
+version 1.1
 
 task vep {
     input {
@@ -7,9 +7,8 @@ task vep {
         File reference_fa
         String cache_version
         Int fork
+        String sample_name
     }
-
-    String outputName = sub(basename(vcf), ".vcf$", "")
 
     command <<<
         #copying and unpacking vep tar file/cache
@@ -21,7 +20,7 @@ task vep {
         --vcf \
         --no_stats \
         -i ~{vcf} \
-        -o ~{outputName}_annotated.vcf \
+        -o ~{sample_name}_annotated.vcf \
         --assembly GRCh38 \
         --refseq \
         --offline \
@@ -40,7 +39,7 @@ task vep {
     >>>
 
     output {
-        File? annotated_vcf = "~{outputName}_annotated.vcf"
+        File? annotated_vcf = "~{sample_name}_annotated.vcf"
     }
 
     runtime {

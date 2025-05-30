@@ -1,27 +1,25 @@
-version 1.0
+version 1.1
 
 task fastp {
     input {
         # Input files: read1 and read2
         File read1
         File read2
+        String sample_name
         # Do i need a defined output directory OutputDir?
     }
 
-    # Derive the output name from read1 by removing the '_R1_001.fastq.gz' suffix
-    String outputName = sub(basename(read1), "_R1_001\\.fastq.gz$", "")
-
     # Command block for fastp docker
     command <<<
-        fastp -i ~{read1} -I ~{read2} -o ~{outputName}_trimmed_R1.fastq.gz -O ~{outputName}_trimmed_R2.fastq.gz -h ~{outputName}_fastp.html -j ~{outputName}_fastp.json
+        fastp -i ~{read1} -I ~{read2} -o ~{sample_name}_trimmed_R1.fastq.gz -O ~{sample_name}_trimmed_R2.fastq.gz -h ~{sample_name}_fastp.html -j ~{sample_name}_fastp.json
     >>>
 
     # Define the output files
     output {
-        File? trimmed_read1 = "~{outputName}_trimmed_R1.fastq.gz"
-        File? trimmed_read2 = "~{outputName}_trimmed_R2.fastq.gz"
-        File? ReportHtml = "~{outputName}_fastp.html"
-        File? ReportJson = "~{outputName}_fastp.json"
+        File? trimmed_read1 = "~{sample_name}_trimmed_R1.fastq.gz"
+        File? trimmed_read2 = "~{sample_name}_trimmed_R2.fastq.gz"
+        File? ReportHtml = "~{sample_name}_fastp.html"
+        File? ReportJson = "~{sample_name}_fastp.json"
     }
 
     # Specify the Docker image to use for this task
