@@ -131,6 +131,7 @@ miniwdl run scripts/my_pipeline_modular_wf.wdl -i config/test_inputs.json
 the workflow uses a custom `Sample` struct defined in `modules/structs.wdl`
 ```
 struct Sample {
+    String sample_name
     File read1
     File read2
 }
