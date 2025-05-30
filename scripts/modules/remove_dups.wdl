@@ -2,8 +2,8 @@ version 1.0
 
 task RemoveDuplicates {
     input {
-        File alignedBam
-        File alignedBai
+        File? alignedBam
+        File? alignedBai
     }
 
      # Derive the output name from alignedBam by removing the '_sorted.bam' suffix
@@ -18,8 +18,8 @@ task RemoveDuplicates {
     >>>
 
     output {
-        File dedup_bam = "~{outputName}_dedup.bam"
-        File dedup_metrics = "dedup_metrics.txt"
+        File? dedup_bam = "~{outputName}_dedup.bam"
+        File? dedup_metrics = "dedup_metrics.txt"
     }
 
     runtime {
@@ -32,7 +32,7 @@ task RemoveDuplicates {
 
 task IndexDedupBam {
     input {
-        File dedup_bam
+        File? dedup_bam
     }
 
     # Derive the output name from read1 by removing the '_dedup.bam' suffix
@@ -46,7 +46,7 @@ task IndexDedupBam {
     >>>
 
     output {
-        File dedup_bai = "~{dedup_bam}.bai"
+        File? dedup_bai = "~{dedup_bam}.bai"
     }
 
     runtime {
