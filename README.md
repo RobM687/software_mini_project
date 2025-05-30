@@ -141,8 +141,9 @@ The `input.json` file proves all the necessary inputs for running the workflow. 
 {
   "my_pipeline_modular.samples": [
     {
-      "read1": "File (path to read1 FASTQ file)",
-      "read2": "File (path to read2 FASTQ file)"
+        "read1": "File (path to read1 FASTQ file)",
+        "read2": "File (path to read2 FASTQ file)",
+        "sample_name": "String (sample name)"
     }
   ],
   "my_pipeline_modular.reference_fa": "File (path to GRCh38_reference.fa)",

@@ -2,7 +2,8 @@
     "my_pipeline_modular.samples": [
         {
             "read1": "/pathto/sample_read1_S1_R1_001.fastq.gz",
-            "read2": "/pathto/sample_read2_S1_R2_001.fastq.gz"
+            "read2": "/pathto/sample_read2_S1_R2_001.fastq.gz",
+            "sample_name": "sample name"
         }
     ],
     "my_pipeline_modular.reference_fa": "/pathto/GRCh38_ref.fa",
