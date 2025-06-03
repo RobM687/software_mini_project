@@ -4,11 +4,11 @@ task bwamem2 {
     #this block of code was quite a faff to build, initially only defining the reference.fa, ulitmately had to define each reference/index required so WDL can identifiy it when needed
     input {
         File reference_fa   #reference genome FASTA
-        File reference_fabwt2bit64  #BWA-MEM2 index file
-        File reference_faann    #reference genome annotation
-        File reference_faamb    #BWA-MEM2 index file
-        File reference_fapac    #BWA-MEM2 index file
-        File reference_fa0123   #BWA-MEM2 index file
+        File reference_fabwt2bit64  #BWA-MEM2 index file, used implicitly
+        File reference_faann    #reference genome annotation, used implicitly
+        File reference_faamb    #BWA-MEM2 index file, used implicitly
+        File reference_fapac    #BWA-MEM2 index file, used implicitly
+        File reference_fa0123   #BWA-MEM2 index file, used implicitly
         File? read1
         File? read2
         String sample_name

@@ -6,7 +6,7 @@ task fastqc {
     }
     
     command <<<
-        for file in ~{sep=' ' fastq_files}; do
+        for file in ~{sep(" ", select_all(fastq_files))}; do  # This line removes all the null entries (missing /corrupt fastqs) from fastq_files, sep() then separates these into a list of files to be fed into fastqc command.
             fastqc $file
         done
         true
