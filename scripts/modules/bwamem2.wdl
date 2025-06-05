@@ -26,13 +26,13 @@ task bwamem2 {
         bwa-mem2 mem \
         -R $(echo "@RG\tID:~{sample_name}\tSM:~{sample_name}\tPL:ILLUMINA\tLB:~{sample_name}") \
         ~{reference_fa} \
-        ~{read1} ~{read2} > ~{sample_name}.sam &&
+        ~{read1} ~{read2} | \
 
         #convert SAM to BAM
-        samtools view -Sb ~{sample_name}.sam > ~{sample_name}.bam &&
+        samtools view -Sb - | \
 
         #Sort bam file
-        samtools sort ~{sample_name}.bam -o ~{sample_name}_sorted.bam &&
+        samtools sort -o ~{sample_name}_sorted.bam &&
 
         #Index sorted bam file
         samtools index ~{sample_name}_sorted.bam
@@ -47,8 +47,8 @@ task bwamem2 {
 
     runtime {
         docker: "swglh/bwamem2:v2.2.1"
-        memory: "16 GB"
-        cpu: 4
+        memory: "60 GB"
+        cpu: 16
         continueOnReturnCode: true
     }
 }
