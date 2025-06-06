@@ -36,8 +36,6 @@ task bwamem2 {
 
         #Index sorted bam file
         samtools index ~{sample_name}_sorted.bam
-
-        true
     >>>
 
     output {

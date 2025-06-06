@@ -12,7 +12,6 @@ task fastp {
     # Command block for fastp docker
     command <<<
         fastp -i ~{read1} -I ~{read2} -o ~{sample_name}_trimmed_R1.fastq.gz -O ~{sample_name}_trimmed_R2.fastq.gz -h ~{sample_name}_fastp.html -j ~{sample_name}_fastp.json
-        true
     >>>
 
     # Define the output files

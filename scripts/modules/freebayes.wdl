@@ -15,7 +15,6 @@ task freebayes {
         touch reference_fafai &&
         touch alignedBai &&
         freebayes -f ~{reference_fa} -t ~{bed_file} ~{alignedBam} > ~{sample_name}.vcf
-        true
     >>>
 
     output {
