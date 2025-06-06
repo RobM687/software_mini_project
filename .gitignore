@@ -4,10 +4,13 @@ results/
 myenv/
 inputs/
 2025*/
+tests/
 
 # Ignore file types
 *.log
 *.tmp
 *.log
 config/test_inputs.json
+config/dnanexus_test_inputs.dx.json
+config/dnanexus_test_inputs.json
 _LAST
