@@ -32,7 +32,7 @@ workflow my_pipeline_modular {
      
         call fastqc.fastqc as initial_fastqc {
             input:
-                fastq_files = [sample.read1, sample.read2],
+                fastq_files = [sample.read1, sample.read2]
         }
 
         call fastp.fastp as run_fastp {
@@ -44,7 +44,7 @@ workflow my_pipeline_modular {
 
         call fastqc.fastqc as post_processing_fastqc {
             input:
-                fastq_files = [run_fastp.trimmed_read1, run_fastp.trimmed_read2],
+                fastq_files = [run_fastp.trimmed_read1, run_fastp.trimmed_read2]
         }
 
         call bwamem2.bwamem2 as run_bwamem2 {
@@ -74,8 +74,8 @@ workflow my_pipeline_modular {
 
         call freebayes.freebayes as run_freebayes{
             input:
-                alignedBam = RemoveDuplicates.dedup_bam,
-                alignedBai = IndexDedupBam.dedup_bai,
+                dedup_bam = RemoveDuplicates.dedup_bam,
+                dedup_bai = IndexDedupBam.dedup_bai,
                 reference_fa = reference_fa,
                 reference_fafai = reference_fafai,
                 bed_file = bed_file,

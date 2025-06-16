@@ -10,7 +10,6 @@ task VcfFilter {
 
     command <<<
         bash -c "python3 ~{vcf_filter_script} ~{annotated_vcf} ~{sample_name}_filtered.vcf --config ~{filter_config}"
-        true
     >>>
 
     output {

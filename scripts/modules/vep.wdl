@@ -36,7 +36,6 @@ task vep {
         --uploaded_allele \
         --check_existing \
         --transcript_version
-        true
     >>>
 
     output {

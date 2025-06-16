@@ -1,0 +1,15 @@
+{
+    "default_task_dx_attributes" : {
+      "runSpec": {
+          "executionPolicy": {
+            "restartOn": {
+                "UnresponsiveWorker": 2,
+                "JMInternalError": 1,
+                "ExecutionError": 1,
+                "AppInternalError": 2
+            }
+          }
+        }
+    },
+    "delayWorkspaceDestruction" : true
+  }

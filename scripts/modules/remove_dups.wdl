@@ -38,7 +38,6 @@ task IndexDedupBam {
         BuildBamIndex \
         I=~{dedup_bam} \
         O=~{dedup_bam}.bai
-        true
     >>>
 
     output {

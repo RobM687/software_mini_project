@@ -198,3 +198,57 @@ Variants with a GnomAD allele frequency above this threshold are retained only i
 
 - Omitting either threshold will cause the filtering script to fail or behave unpredictably.
 - Values must be numeric (floats), not strings (e.g., `"0.05"` is incorrect).
+
+## Running the workflow on DNAnexus
+This workflow can also be deployed and executed on the DNAnexus Platform using dxCompiler.
+
+#### Requirements
+- A DNAnexus account and contributor access to a project.
+- Java 8 or later installed
+- dxCompiler JAR file (e.g., `dxCompiler-2.11.4.jar`)
+- dx command-line tool installed and authenticated (`dx login`)
+
+### Upload input files to DNAnexus
+Upload all required input files (FASTQs, reference genome files, BED, VEP tarball, filtering script, and configs) to your DNAnexus project:
+``` bash
+dx upload /path/to/file.fastq.gz --destination "project-xxxx:/input_data/"
+```
+
+### Compile the worklfow
+Use `dxCompiler` to compile the WDL script into a DNAnexus workflow:
+```bash
+java -jar dxCompiler-2.11.4.jar \
+  compile scripts/my_pipeline_modular_wf.wdl \
+  -compileMode All \
+  -extras config/extras.json \
+  -destination "project-xxxx:/workflows/"
+```
+This will create a DNAnexus workflow in your chosen project under the `/workflows/` folder.
+
+### Generate `dx.json` input file
+Convert your local input JSON to a DNAnexus-compatible format:
+```bash
+java -jar dxCompiler-2.11.4.jar \
+  compile scripts/my_pipeline_modular_wf.wdl \
+  -compileMode IR \
+  -inputs config/my_pipeline_modular_inputs.json \
+  > config/my_pipeline_modular_inputs.dx.json
+```
+The `dx.json` file can then be edited to replace local file paths with DNAnexus file IDs or project-relative paths, e.g.:
+```JSON
+"my_pipeline_modular.reference_fa": "project-xxxx:/input_data/GRCh38.fa"
+```
+
+### Run the workflow
+Use the dx run command to launch the workflow using the workflow name:
+```bash
+dx run my_pipeline_modular \
+  -f config/test_inputs.dx.json \
+  --destination "project-xxxx:/results/" \
+```
+or specificing the workflow-ID
+```bash
+dx run workflow-xxxxID \
+  -f config/test_inputs.dx.json \
+  --destination "project-xxxx:/results/" \
+```

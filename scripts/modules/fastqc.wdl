@@ -6,15 +6,16 @@ task fastqc {
     }
     
     command <<<
-        for file in ~{sep=' ' fastq_files}; do
-            fastqc $file
+        mkdir -p fastqc_output
+
+        for file in ~{sep(" ", select_all(fastq_files))}; do  # This line removes all the null entries (missing /corrupt fastqs) from fastq_files, sep() then separates these into a list of files to be fed into fastqc command.
+            fastqc -o fastqc_output $file
         done
-        true
     >>>
 
     output {
-        Array[File?] qc_reports = glob("*_fastqc.zip")  # This now includes wildcard '*' to ensure all _fastqc.zip files are captured in the glob
-        Array[File?] qc_summaries = glob("*_fastqc.html")  # This now includes wildcard '*' to ensure all _fastqc.html files are captured in the glob
+        Array[File?] qc_reports = glob("fastqc_output/*_fastqc.zip")  # This now includes wildcard '*' to ensure all _fastqc.zip files are captured in the glob
+        Array[File?] qc_summaries = glob("fastqc_output/*_fastqc.html")  # This now includes wildcard '*' to ensure all _fastqc.html files are captured in the glob
     }
 
     runtime {
