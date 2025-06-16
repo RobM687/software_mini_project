@@ -74,8 +74,8 @@ workflow my_pipeline_modular {
 
         call freebayes.freebayes as run_freebayes{
             input:
-                alignedBam = RemoveDuplicates.dedup_bam,
-                alignedBai = IndexDedupBam.dedup_bai,
+                dedup_bam = RemoveDuplicates.dedup_bam,
+                dedup_bai = IndexDedupBam.dedup_bai,
                 reference_fa = reference_fa,
                 reference_fafai = reference_fafai,
                 bed_file = bed_file,
