@@ -32,15 +32,11 @@ task bwamem2 {
         samtools view -Sb - | \
 
         #Sort bam file
-        samtools sort -o ~{sample_name}_sorted.bam &&
-
-        #Index sorted bam file
-        samtools index ~{sample_name}_sorted.bam
+        samtools sort -o ~{sample_name}_sorted.bam
     >>>
 
     output {
         File? alignedBam = "~{sample_name}_sorted.bam"
-        File? alignedBai = "~{sample_name}_sorted.bam.bai"
     }
 
     runtime {
