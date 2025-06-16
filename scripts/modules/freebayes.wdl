@@ -4,8 +4,8 @@ task freebayes {
     input {
         File reference_fa
         File reference_fafai
-        File? alignedBam
-        File? alignedBai
+        File? dedup_bam
+        File? dedup_bai
         File bed_file
         String sample_name
     }
@@ -13,8 +13,8 @@ task freebayes {
     command <<<
         #running Freebayes in standard configuration
         touch reference_fafai &&
-        touch alignedBai &&
-        freebayes -f ~{reference_fa} -t ~{bed_file} ~{alignedBam} > ~{sample_name}.vcf
+        touch dedup_bai &&
+        freebayes -f ~{reference_fa} -t ~{bed_file} ~{dedup_bam} > ~{sample_name}.vcf
     >>>
 
     output {
