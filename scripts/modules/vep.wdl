@@ -17,7 +17,7 @@ task vep {
 
         # Changing permissions of files to ensure all are readable and executable if needed
         chmod -R a+rX .
-        
+
         # Running vep
         vep \
         --vcf \
@@ -28,7 +28,8 @@ task vep {
         --refseq \
         --offline \
         --cache \
-        --dir_cache . \
+        --dir_cache ./homo_sapiens_merged \
+        --plugin_dir ./Plugins \
         --cache_version ~{cache_version} \
         --fork ~{fork} \
         --fasta ~{reference_fa} \
