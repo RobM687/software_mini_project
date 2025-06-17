@@ -11,11 +11,14 @@ task vep {
     }
 
     command <<<
-        #copying and unpacking vep tar file/cache
+        # Copying and unpacking vep tar file/cache
         cp ~{vep_tar} .
         tar --no-same-owner -zxvf ~{basename(vep_tar)}
+
+        # Changing permissions of files to ensure all are readable and executable if needed
+        chmod -R a+rX .
         
-        #running vep
+        # Running vep
         vep \
         --vcf \
         --no_stats \
