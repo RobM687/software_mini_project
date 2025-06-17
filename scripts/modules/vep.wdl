@@ -13,7 +13,7 @@ task vep {
     command <<<
         #copying and unpacking vep tar file/cache
         cp ~{vep_tar} .
-        tar -zxvf ~{basename(vep_tar)}
+        tar --no-same-owner -zxvf ~{basename(vep_tar)}
         
         #running vep
         vep \
