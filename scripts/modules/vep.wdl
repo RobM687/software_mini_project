@@ -25,11 +25,11 @@ task vep {
         -i ~{vcf} \
         -o ~{sample_name}_annotated.vcf \
         --assembly GRCh38 \
-        --refseq \
+        --merged \
         --offline \
         --cache \
-        --dir_cache ./homo_sapiens_merged \
-        --plugin_dir ./Plugins \
+        --dir_cache . \
+        --dir_plugins ./Plugins \
         --cache_version ~{cache_version} \
         --fork ~{fork} \
         --fasta ~{reference_fa} \
