@@ -3,7 +3,7 @@
 ## Overview
 This repository contains a modular Workflow Description Language (WDL) workflow (`my_pipeline_modular_wf.wdl`), designed to process constitutional genomic data. The workflow includes quality control, read trimming, alignment, duplicate removal, variant calling, annotation, and VCF filtering.
 
-The Docker images used are specified within the `runtime` block within the respective module wdl scripts and are automatically pulled and executed by `miniwdl` WDL engine when the pipeline is run.
+The Docker images used are specified within the runtime block of each module WDL script. These images are automatically pulled and executed by `miniwdl` WDL engine when running locally or by the DNA Nexus platform when deployed in the cloud.
 
 The workflow is structured using modular WDL imports and uses a `Sample` struct to define paired-end FASTQ inputs. It uses a `scatter` block to parallelize processing across multiple samples
 
@@ -123,7 +123,7 @@ miniwdl run scripts/my_pipeline_modular_wf.wdl -i config/test_inputs.json
 bwa-mem2 index reference.fa
 ```
 
-*VEP cache files can be downloaded from [Ensembl](https://ftp.ensembl.org/pub/release-111/variation/vep/homo_sapiens_refseq_vep_111_GRCh38.tar.gz). This pipeline was developed using VEP version 111.*
+*VEP cache files can be downloaded from [Ensembl](https://ftp.ensembl.org/pub/release-111/variation/vep/homo_sapiens_refseq_vep_111_GRCh38.tar.gz). This pipeline was developed using VEP version 111, if you wish to use an alternate version of VEP the Docker image used by `vep.wdl`, the VEP cache will need to be updated to a compatible version. Using mismatched versions (e.g., VEP 110 Docker with VEP 114 cache) can lead to errors or incorrect annotations.*
 
 ## Outputs
 
@@ -199,7 +199,7 @@ Variants with a GnomAD allele frequency above this threshold are retained only i
 - Omitting either threshold will cause the filtering script to fail or behave unpredictably.
 - Values must be numeric (floats), not strings (e.g., `"0.05"` is incorrect).
 
-## Running the workflow on DNAnexus
+## ☁️ Running the workflow on DNAnexus
 This workflow can also be deployed and executed on the DNAnexus Platform using dxCompiler.
 
 #### Requirements
@@ -207,6 +207,7 @@ This workflow can also be deployed and executed on the DNAnexus Platform using d
 - Java 8 or later installed
 - dxCompiler JAR file (e.g., `dxCompiler-2.11.4.jar`)
 - dx command-line tool installed and authenticated (`dx login`)
+- All Docker images specified in the runtime blocks are publicly accessible (e.g., on Docker Hub).
 
 ### Upload input files to DNAnexus
 Upload all required input files (FASTQs, reference genome files, BED, VEP tarball, filtering script, and configs) to your DNAnexus project:
@@ -243,12 +244,14 @@ The `dx.json` file can then be edited to replace local file paths with DNAnexus 
 Use the dx run command to launch the workflow using the workflow name:
 ```bash
 dx run my_pipeline_modular \
-  -f config/test_inputs.dx.json \
-  --destination "project-xxxx:/results/" \
+  -f config/test_inputs.dx.json \
+  --destination "project-xxxx:/results/" \
+  --delay-workspace-destruction
 ```
 or specificing the workflow-ID
 ```bash
 dx run workflow-xxxxID \
   -f config/test_inputs.dx.json \
   --destination "project-xxxx:/results/" \
+  --delay-workspace-destruction
 ```

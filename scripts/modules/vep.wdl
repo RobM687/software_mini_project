@@ -11,21 +11,25 @@ task vep {
     }
 
     command <<<
-        #copying and unpacking vep tar file/cache
+        # Copying and unpacking vep tar file/cache
         cp ~{vep_tar} .
-        tar -zxvf ~{basename(vep_tar)}
-        
-        #running vep
+        tar --no-same-owner -zxvf ~{basename(vep_tar)}
+
+        # Changing permissions of files to ensure all are readable and executable if needed
+        chmod -R a+rX .
+
+        # Running vep
         vep \
         --vcf \
         --no_stats \
         -i ~{vcf} \
         -o ~{sample_name}_annotated.vcf \
         --assembly GRCh38 \
-        --refseq \
+        --merged \
         --offline \
         --cache \
         --dir_cache . \
+        --dir_plugins ./Plugins \
         --cache_version ~{cache_version} \
         --fork ~{fork} \
         --fasta ~{reference_fa} \

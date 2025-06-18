@@ -11,10 +11,17 @@ task freebayes {
     }
 
     command <<<
-        #running Freebayes in standard configuration
-        touch reference_fafai &&
-        touch dedup_bai &&
-        freebayes -f ~{reference_fa} -t ~{bed_file} ~{dedup_bam} > ~{sample_name}.vcf
+        # Copy BAM and BAI
+        cp ~{dedup_bam} dedup.bam
+        if [ -f "~{dedup_bai}" ]; then
+            cp ~{dedup_bai} dedup.bam.bai
+        fi
+        
+        # Copy ref FASTA index to expected name
+        cp ~{reference_fafai} ~{reference_fa}.fai
+
+        # Running Freebayes in standard configuration
+        freebayes -f ~{reference_fa} -t ~{bed_file} dedup.bam > ~{sample_name}.vcf
     >>>
 
     output {

@@ -60,22 +60,16 @@ workflow my_pipeline_modular {
                 sample_name = sample.sample_name
         }
 
-        call remove_dups.RemoveDuplicates {
+        call remove_dups.RemoveDuplicates as run_remove_dups {
             input:
                 alignedBam = run_bwamem2.alignedBam,
-                alignedBai = run_bwamem2.alignedBai,
                 sample_name = sample.sample_name
         }
         
-        call remove_dups.IndexDedupBam {
-            input:
-                dedup_bam = RemoveDuplicates.dedup_bam
-        }
-
         call freebayes.freebayes as run_freebayes{
             input:
-                dedup_bam = RemoveDuplicates.dedup_bam,
-                dedup_bai = IndexDedupBam.dedup_bai,
+                dedup_bam = run_remove_dups.dedup_bam,
+                dedup_bai = run_remove_dups.dedup_bai,
                 reference_fa = reference_fa,
                 reference_fafai = reference_fafai,
                 bed_file = bed_file,
@@ -109,10 +103,9 @@ workflow my_pipeline_modular {
         Array[File?] trimmed_read1 = run_fastp.trimmed_read1
         Array[File?] trimmed_read2 = run_fastp.trimmed_read2
         Array[File?] alignedBam = run_bwamem2.alignedBam
-        Array[File?] alignedBai = run_bwamem2.alignedBai
-        Array[File?] dedup_bam = RemoveDuplicates.dedup_bam
-        Array[File?] dedup_bai = IndexDedupBam.dedup_bai
-        Array[File?] dedup_metrics = RemoveDuplicates.dedup_metrics
+        Array[File?] dedup_bam = run_remove_dups.dedup_bam
+        Array[File?] dedup_bai = run_remove_dups.dedup_bai
+        Array[File?] dedup_metrics = run_remove_dups.dedup_metrics
         Array[File?] vcf = run_freebayes.vcf
         Array[File?] annotated_vcf = run_vep.annotated_vcf
         Array[File?] filtered_vcf = VcfFilter.filtered_vcf
